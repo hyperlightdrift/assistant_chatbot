@@ -27,7 +27,7 @@ The goal of this project is to serve as a **comprehensive showcase of applied AI
 | Multimodal AI | Combine text, image, and audio inputs/outputs |
 | Plugin Architecture | Dynamic loading of capabilities (via tools, agents, or commands) |
 
-### 🧭 Roadmap (Short-Term Goals)
+### Roadmap (Short-Term Goals)
 
 - [ ] Add viewing and deleting of calendar events
 - [ ] Expand natural language command parser
