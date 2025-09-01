@@ -3,6 +3,8 @@ credentials.json
 client_secret.json
 service_account*.json
 token.json
+client_secret*.json
+internal/*.json
 *.pem
 *.key
 *.p12
