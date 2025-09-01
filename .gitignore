@@ -1,0 +1,45 @@
+# --- secrets & auth (Google / general) ---
+credentials.json
+client_secret.json
+service_account*.json
+token.json
+*.pem
+*.key
+*.p12
+.env
+.env.*
+*.ini
+*.yaml
+*.yml
+
+# --- python build/artifacts ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.log
+*.pickle
+*.pkl
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- virtualenv / tools ---
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+dist/
+build/
+
+# --- editors ---
+.vscode/
+.idea/
+*.iml
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db
