@@ -1,7 +1,9 @@
 # # events.py
 #
+from datetime import datetime
+
 from auth.authentication import get_credentials  # your existing auth helper
-from . import datetime_utils
+from . import datetime_utils, parser
 
 
 # _cal = parsedatetime.Calendar()
@@ -118,25 +120,30 @@ def view_events(service, parsed: dict, calendar_id: str = 'primary') -> list[dic
         "calendarId": "primary",
         "singleEvents": True,
         "orderBy": "startTime",
-        "timeMin": "2024-08-27T00:00:00-06:00",
-        "timeMax": "2024-08-28T00:00:00-06:00",
+        "timeMin": time_min,
+        "timeMax": time_max,
         "maxResults": 100,
     }
 
     response = service.events().list(**params).execute()
-    # resp = service.events().list(
-    #     calendarId='primary',
-    #     singleEvents=True,
-    #     orderBy='startTime',
-    #     timeMin='2025-08-27T00:00:00-06:00',
-    #     timeMax='2025-08-28T00:00:00-06:00'
-    # ).execute()
+
     events = response.get("items", [])
+    print(events)
+
     for event in events:
-        print(event)
-        print(f'{event["summary"]}: {event["start"]}, {event["end"]}')
+        start_str = event["start"].get("dateTime")
+        end_str = event["end"].get("dateTime")
+
+        if start_str and end_str:
+            start_dt = datetime.fromisoformat(start_str)
+            end_dt = datetime.fromisoformat(end_str)
+
+            start_fmt = start_dt.strftime("%-I %p")
+            end_fmt = end_dt.strftime("%-I %p")
+
+            print(f'{event["summary"]}: {start_fmt} to {end_fmt}')
+    print("\n")
     # return events
-    # print("Here are the events ", events)
 
 
 

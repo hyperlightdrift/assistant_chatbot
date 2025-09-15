@@ -8,8 +8,8 @@ from googleapiclient.discovery import build
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 TOKEN_PATH = 'token.json'
 CREDS_PATH = os.path.join('internal',
-    'client_secret_923056037784-85mpqif3512ra0s9qjusjtqfnmkpv7el'
-    '.apps.googleusercontent.com.json')
+                          'client_secret_923056037784-8o1j30uv5os6j6plbs0mitentaq6vkgh.apps.googleusercontent.com.json')
+
 
 def get_credentials():
     creds = None
