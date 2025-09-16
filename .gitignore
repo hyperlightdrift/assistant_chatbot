@@ -45,3 +45,6 @@ build/
 # --- OS cruft ---
 .DS_Store
 Thumbs.db
+
+# --- general ---
+notes.txt

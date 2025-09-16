@@ -7,7 +7,6 @@ from zoneinfo import ZoneInfo
 from dateutil import tz
 
 
-
 _cal = parsedatetime.Calendar()
 local_tz = tz.tzlocal()
 DP_SETTINGS = {
@@ -31,8 +30,6 @@ def extract_datetime(text):
 
 
 def parse_input(user_input):
-
-    # when only given a date, it's parsing the wrong time
 
     intent_re = re.compile(
         r'\b(?P<intention>create|make|add|schedule|remove|delete|destroy|view|see|look)\b',
@@ -68,12 +65,12 @@ def parse_input(user_input):
     )
 
     name_m = name_re.search(user_input)
-    # title = None
+    title = None
     if name_m:
         raw = name_m.group('title')  # e.g.  "'test'"
         title = raw.strip('"\'')
-    else:
-        title = input("What is the title? ")
+    # else:
+    #     title = input("What is the title? ")
 
     split_re = re.compile(r'(.+?)\s+(on|at|from|between|in)\s+(.+)', re.IGNORECASE)
     m = split_re.match(user_input)
@@ -103,13 +100,11 @@ def parse_input(user_input):
                 start_time = a.group("s").strip()
                 when_text = when_text[:a.start()].strip()
 
-
-# the split off is here
     if title:
         summary = title
 
     # Parse the date
-    dt_date = extract_datetime(when_text) if when_text else None  # possible problem here
+    dt_date = extract_datetime(when_text) if when_text else None
 
     time_min = time_max = None
     if dt_date and start_time is None and end_time is None:
@@ -153,7 +148,9 @@ def parse_input(user_input):
 
     dt_date = extract_datetime(when_text) if when_text else None
 
-    # print(f"{title}\n{intention}\n{obj}\n{start_time}\n{end_time}\n{dt_date}\n{summary}")
+
+# TODO: create function to determine if create, view, or delete, then use logic to ask for required fields
+
     if start_time is None and end_time is None:
         cal_info = {
             'intention': intention,
@@ -176,58 +173,3 @@ def parse_input(user_input):
         }
 
     return cal_info
-
-# summary, date_text, start_txt, end_txt, title = parse_input(user_input)
-    #
-    # # if explicit title given, override
-    # if title:
-    #     summary = title
-    #
-    # # Parse the date
-    # dt_date = extract_datetime(date_text) if date_text else None
-    #
-    # # If date only but you have a start time, merge them
-    # if dt_date and start_txt:
-    #     t = extract_datetime(start_txt)
-    #     if t:
-    #         dt_date = dt_date.replace(hour=t.hour, minute=t.minute)
-    #
-    # # Build start/end datetimes
-    # start_dt = dt_date
-    # if start_txt and not date_text:
-    #     # if no date part, maybe the entire phrase was a time
-    #     start_dt = extract_datetime(start_txt)
-    #
-    # if end_txt:
-    #     t2 = extract_datetime(end_txt)
-    #     # merge date if needed
-    #     if dt_date and t2:
-    #         end_dt = dt_date.replace(hour=t2.hour, minute=t2.minute)
-    #     elif t2:
-    #         end_dt = t2
-    #     else:
-    #         end_dt = start_dt + timedelta(hours=1)
-    # else:
-    #     end_dt = (start_dt + timedelta(hours=1)) if start_dt else None
-    #
-    # # Prompt for any missing core fields
-    # if not summary:
-    #     summary = input("What should this event be called? ")
-    # if not start_dt:
-    #     raw = input("When should it start? ")
-    #     start_dt = extract_datetime(raw)
-    # if not end_dt:
-    #     raw = input("When should it end? ")
-    #     end_dt = extract_datetime(raw)
-    #
-    # # Now build your Google Calendar body as before
-    # event_body = {
-    #     'summary': summary,
-    #     'start':  {'dateTime': start_dt.isoformat(), 'timeZone': 'America/Denver'},
-    #     'end':    {'dateTime': end_dt.isoformat(),   'timeZone': 'America/Denver'},
-    #     # location/description omitted for brevity…
-    # }
-    #
-    # service = get_credentials()
-    # created = service.events().insert(calendarId='primary', body=event_body).execute()
-    # print(f"Event created: {created.get('htmlLink')}\n")
