@@ -18,22 +18,6 @@ def request_manager():
 
 
 
-# commands = {
-#     "joke": tell_joke,
-#     "weather": get_weather,
-#     "time": get_time,
-# }
-#
-# user_input = input("What can I help with? ").lower()
-#
-# for keyword, action in commands.items():
-#     if keyword in user_input:
-#         action()
-#         break
-# else:
-#     print("Sorry, I didn't understand that.")
-
-
 
 if __name__ == "__main__":
     request_manager()

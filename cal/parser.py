@@ -48,7 +48,7 @@ def parse_input(user_input):
     )
 
     object_m = object_re.search(user_input)
-    if intent_m:
+    if object_m:
         obj = object_m.group('object')
     else:
         obj = input("Is this an event, appointment, or task? ")
@@ -72,7 +72,8 @@ def parse_input(user_input):
     # else:
     #     title = input("What is the title? ")
 
-    split_re = re.compile(r'(.+?)\s+(on|at|from|between|in)\s+(.+)', re.IGNORECASE)
+    # TODO: have group 3 catch the word "week"
+    split_re = re.compile(r'(.+?)\s+(on|at|from|between|in)\s+(.+)', re.IGNORECASE)  # group 3 isn't catching "week"
     m = split_re.match(user_input)
     if m:
         summary = m.group(1).strip()
@@ -136,20 +137,21 @@ def parse_input(user_input):
     else:
         end_dt = (start_dt + timedelta(hours=1)) if start_dt else None
 
-    # Prompt for any missing core fields
-    if not summary:
-        summary = input("What should this event be called? ")
-    if not start_dt:
-        raw = input("When should it start? ")
-        start_dt = extract_datetime(raw)
-    if not end_dt:
-        raw = input("When should it end? ")
-        end_dt = extract_datetime(raw)
+    scope = "all" if re.search(r'\b(all|everything|every)\b', user_input, re.IGNORECASE) else None
+    force = bool(re.search(r'\b(force|anyway|i[’\']?m sure|yes,? delete)\b', user_input, re.IGNORECASE))
+
+    is_create = intention.lower() in ("create", "make", "add", "schedule")
+    if is_create:
+        if not summary:
+            summary = input("What should this event be called? ")
+        if not start_dt:
+            raw = input("When should it start? ")
+            start_dt = extract_datetime(raw)
+        if not end_dt:
+            raw = input("When should it end? ")
+            end_dt = extract_datetime(raw)
 
     dt_date = extract_datetime(when_text) if when_text else None
-
-
-# TODO: create function to determine if create, view, or delete, then use logic to ask for required fields
 
     if start_time is None and end_time is None:
         cal_info = {
@@ -159,6 +161,8 @@ def parse_input(user_input):
             'start': time_min,
             'end': time_max,
             'date': dt_date,
+            'scope': scope,
+            'force': force,
             'raw_text': user_input
         }
     else:
@@ -166,9 +170,11 @@ def parse_input(user_input):
             'intention': intention,
             'object': obj,
             'title': summary,
-            'start': start_dt,
-            'end': end_dt,
+            'start': start_dt.isoformat(),
+            'end': end_dt.isoformat(),
             'date': dt_date,
+            'scope': scope,
+            'force': force,
             'raw_text': user_input
         }
 
