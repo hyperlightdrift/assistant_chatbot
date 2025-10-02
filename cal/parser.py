@@ -73,7 +73,7 @@ def parse_input(user_input):
     #     title = input("What is the title? ")
 
     # TODO: have group 3 catch the word "week"
-    split_re = re.compile(r'(.+?)\s+(on|at|from|between|in)\s+(.+)', re.IGNORECASE)  # group 3 isn't catching "week"
+    split_re = re.compile(r'(.+?)\s+(?:(on|at|from|between|in)\s+|(?=\ba\s+week\b))(.+)', re.IGNORECASE)  # group 3 isn't catching "week"
     m = split_re.match(user_input)
     if m:
         summary = m.group(1).strip()
