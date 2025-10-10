@@ -32,10 +32,19 @@ def view_events(service, parsed: dict, calendar_id: str = 'primary'):
     end = parsed.get('end')
     date_dt = parsed.get('date')
 
+    
     time_min = time_max = None
+    
+    # Handle different cases for time bounds
     if start and end:
-        time_min, time_max = datetime_utils.iso_with_offset(start), datetime_utils.iso_with_offset(end)
+        # If start/end are datetime objects, convert to ISO strings
+        if isinstance(start, datetime) and isinstance(end, datetime):
+            time_min, time_max = datetime_utils.iso_with_offset(start), datetime_utils.iso_with_offset(end)
+        # If start/end are already strings (from day_bounds), use them directly
+        elif isinstance(start, str) and isinstance(end, str):
+            time_min, time_max = start, end
     elif date_dt:
+        # If only a date is provided, get day bounds
         time_min, time_max = datetime_utils.day_bounds(date_dt)
 
     params = {
@@ -52,19 +61,10 @@ def view_events(service, parsed: dict, calendar_id: str = 'primary'):
     if title:
         params["q"] = title
 
-    params = {
-        "calendarId": "primary",
-        "singleEvents": True,
-        "orderBy": "startTime",
-        "timeMin": time_min,
-        "timeMax": time_max,
-        "maxResults": 100,
-    }
 
     response = service.events().list(**params).execute()
 
     events = response.get("items", [])
-    print(events)
 
     for event in events:
         start_str = event["start"].get("dateTime")

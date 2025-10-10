@@ -5,10 +5,17 @@ from google.auth.exceptions import RefreshError
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+SCOPES = [
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/tasks'
+]
 TOKEN_PATH = 'token.json'
 CREDS_PATH = os.path.join('internal',
                           'client_secret_923056037784-8o1j30uv5os6j6plbs0mitentaq6vkgh.apps.googleusercontent.com.json')
+
+# Global service cache
+_cached_calendar_service = None
+_cached_tasks_service = None
 
 
 def get_credentials():
@@ -40,3 +47,32 @@ def get_credentials():
 
     # 5) Build and return the Calendar service client
     return build('calendar', 'v3', credentials=creds, static_discovery=False)
+
+
+def get_calendar_service():
+    """Get cached calendar service or create new one if needed."""
+    global _cached_calendar_service
+    
+    if _cached_calendar_service is None:
+        creds = get_credentials()
+        _cached_calendar_service = build('calendar', 'v3', credentials=creds, static_discovery=False)
+    
+    return _cached_calendar_service
+
+
+def get_tasks_service():
+    """Get cached tasks service or create new one if needed."""
+    global _cached_tasks_service
+    
+    if _cached_tasks_service is None:
+        creds = get_credentials()
+        _cached_tasks_service = build('tasks', 'v1', credentials=creds, static_discovery=False)
+    
+    return _cached_tasks_service
+
+
+def clear_service_cache():
+    """Clear the cached services (useful for testing or credential refresh)."""
+    global _cached_calendar_service, _cached_tasks_service
+    _cached_calendar_service = None
+    _cached_tasks_service = None

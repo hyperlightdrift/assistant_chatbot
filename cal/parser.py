@@ -69,17 +69,14 @@ def parse_input(user_input):
     if name_m:
         raw = name_m.group('title')  # e.g.  "'test'"
         title = raw.strip('"\'')
-    # else:
-    #     title = input("What is the title? ")
 
-    # TODO: have group 3 catch the word "week"
-    split_re = re.compile(r'(.+?)\s+(?:(on|at|from|between|in)\s+|(?=\ba\s+week\b))(.+)', re.IGNORECASE)  # group 3 isn't catching "week"
+    split_re = re.compile(r'(.+?)\s+(?:(on|at|from|between|in|for)\s+|(?=\ba\s+week\b))(.+)', re.IGNORECASE)
     m = split_re.match(user_input)
     if m:
-        summary = m.group(1).strip()
+        # summary = m.group(1).strip()
         when_text = m.group(3).strip()
     else:
-        summary = user_input.strip()
+        # summary = user_input.strip()
         when_text = None
 
     start_time = end_time = None
@@ -101,8 +98,8 @@ def parse_input(user_input):
                 start_time = a.group("s").strip()
                 when_text = when_text[:a.start()].strip()
 
-    if title:
-        summary = title
+    # if title:
+    #     summary = title
 
     # Parse the date
     dt_date = extract_datetime(when_text) if when_text else None
@@ -142,8 +139,10 @@ def parse_input(user_input):
 
     is_create = intention.lower() in ("create", "make", "add", "schedule")
     if is_create:
-        if not summary:
-            summary = input("What should this event be called? ")
+        # if not summary:
+        if not title:
+            title = input("What should this event be called? ")
+            # summary = input("What should this event be called? ")
         if not start_dt:
             raw = input("When should it start? ")
             start_dt = extract_datetime(raw)
@@ -157,7 +156,8 @@ def parse_input(user_input):
         cal_info = {
             'intention': intention,
             'object': obj,
-            'title': summary,
+            'title': title,
+            # 'title': summary,
             'start': time_min,
             'end': time_max,
             'date': dt_date,
@@ -169,7 +169,8 @@ def parse_input(user_input):
         cal_info = {
             'intention': intention,
             'object': obj,
-            'title': summary,
+            'title': title,
+            # 'title': summary,
             'start': start_dt.isoformat(),
             'end': end_dt.isoformat(),
             'date': dt_date,
