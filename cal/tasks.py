@@ -6,15 +6,15 @@ from exceptions import AssistantError
 # from ..exceptions import AssistantError
 
 
-def create_task(service, title: str, start: str = None, date: datetime = None):
+def create_task(service, title: str, date: datetime = None):
     """
     Create a task in Google Tasks.
     
     Args:
         service: Google Tasks API service
         title: Task title
-        start: Start time (ISO string)
-        date: Due date (datetime object)
+        start: Start time (NOT SUPPORTED by Google Tasks API - ignored)
+        date: Due date (datetime object) - only date portion is used
     """
     try:
         task_body = {
@@ -41,7 +41,10 @@ def create_task(service, title: str, start: str = None, date: datetime = None):
             body=task_body
         ).execute()
         
-        print(f"Task created: {created_task.get('title')}")
+        task_title = created_task.get('title')
+        # task_link = created_task.get('selfLink', 'Link not available')
+        print(f"Task created: {task_title}")
+        # print(f"Task link: {task_link}")
         return created_task
         
     except Exception as e:

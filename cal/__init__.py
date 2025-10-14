@@ -6,9 +6,9 @@ from datetime import datetime
 
 def handle_calendar_command(user_input):
     parsed = parser.parse_input(user_input)
-    service = get_calendar_service()
 
     if parsed['object'] == 'event' or parsed['object'] == 'events':
+        service = get_calendar_service()
         if parsed['intention'] == 'create' or parsed['intention'] == 'schedule':
             return events.create_event(service, parsed['title'], parsed['start'], parsed['end'])
         elif parsed['intention'] == 'view':
@@ -20,7 +20,7 @@ def handle_calendar_command(user_input):
     elif parsed['object'] == 'task' or parsed['object'] == 'tasks':
         tasks_service = get_tasks_service()
         if parsed['intention'] == 'create' or parsed['intention'] == 'schedule':
-            return tasks.create_task(tasks_service, parsed['title'], parsed['start'], parsed['date'])
+            return tasks.create_task(tasks_service, parsed['title'], parsed['date'])
         elif parsed['intention'] == 'view':
             return tasks.view_tasks(tasks_service, parsed['title'], parsed['date'])
         elif parsed['intention'] == 'delete' or parsed['intention'] == 'remove':

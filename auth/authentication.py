@@ -45,8 +45,8 @@ def get_credentials():
         with open(TOKEN_PATH, 'w') as token_file:
             token_file.write(creds.to_json())
 
-    # 5) Build and return the Calendar service client
-    return build('calendar', 'v3', credentials=creds, static_discovery=False)
+    # 5) Return the credentials
+    return creds
 
 
 def get_calendar_service():
